@@ -47,7 +47,7 @@ fn spam_reqs(counter: &AtomicUsize, dest: SocketAddr) {
     // one thread spams the same request over and over
     std::thread::spawn(move || {
         let req =
-            b"{\"jsonrpc\": \"2.0\", \"method\": \"subtract\", \"params\": [42, 23], \"id\": 1}\n";
+            b"{\"jsonrpc\": \"2.0\", \"method\": \"hello-world\", \"params\": [], \"id\": 1}\n";
         loop {
             upstream.write_all(req).expect("cannot write");
         }
