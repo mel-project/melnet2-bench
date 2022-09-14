@@ -38,5 +38,5 @@ jobs:
       - name: Update Rust
         run: rustup update
 
-      - name: Run Musl Build
+      - name: Run Build
         run: mold --run cargo build --all-features --verbose
