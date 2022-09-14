@@ -46,10 +46,10 @@ fn spam_reqs(counter: &AtomicUsize, dest: SocketAddr) {
     // one thread spams the same request over and over
     std::thread::spawn(move || {
         loop {
-            let mut input_string = serde_json::to_string(&request).expect("Could not convert struct to string.");
+            let input_string = serde_json::to_string(&request).expect("Could not convert struct to string.");
 
-            upstream.write(input_string.as_bytes());
-            upstream.write(b"\n");
+            upstream.write(input_string.as_bytes()).expect("Could not write input string to stream");
+            upstream.write(b"\n").expect("Could not write newline to stream");
             upstream.flush().expect("Could not flush stream.");
         }
     });
