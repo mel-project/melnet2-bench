@@ -21,24 +21,29 @@ impl BenchProtocol for BenchServerImpl {
         "hello world".to_string()
     }
 
-    async fn delayed_echo(&self, s: String, secs: u64) -> String {
+    async fn delayed_echo(&self, input_string: String, secs: u64) -> String {
         smol::Timer::after(Duration::from_secs(secs)).await;
-        s
+
+        input_string
     }
 }
 
 fn main() {
     let args: ServerArgs = argh::from_env();
+
     smolscale::block_on(async move {
-        let bhaul = TcpBackhaul::new();
-        bhaul
+        let backhaul: TcpBackhaul = TcpBackhaul::new();
+
+        backhaul
             .start_listen(
                 args.listen.to_string().into(),
                 BenchService(BenchServerImpl),
             )
             .await
             .unwrap();
+
         eprintln!("listening on {}", args.listen);
+
         smol::future::pending().await
     })
 }
