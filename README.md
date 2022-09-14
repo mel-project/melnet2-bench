@@ -21,10 +21,12 @@ This repo is a single crate that compiles to two binaries, `mn2-bench-server` an
 
 ## Running
 
+In one terminal, run:
 ```
 cargo run --bin mn2-bench-server -- --listen 127.0.0.1:9090
 ```
 
+In another terminal, run:
 ```
 cargo run --bin mn2-bench-client -- --connect 127.0.0.1:9090
 ```
