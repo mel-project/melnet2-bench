@@ -1,4 +1,6 @@
-This repo is a single crate that compiles to two binaries, `mn2-bench-server` and `mn2-bench-client`. `cargo install --path .` in this repo to install both to `$PATH`.
+# Melnet 2.0 Benchmarking
+
+This repo is a single crate that compiles to two binaries, `mn2-bench-server` and `mn2-bench-client`.
 
 ---
 
@@ -14,3 +16,25 @@ This repo is a single crate that compiles to two binaries, `mn2-bench-server` an
 `mn2-bench-client` spams a massive amount of requests / second to a given `mn2-bench-server`. Currently, it just spams the `hello_world` method.
 
 `mn2-bench-client --help` displays detailed help.
+
+
+
+## Running
+
+In one terminal, run:
+```
+cargo run --bin mn2-bench-server -- --listen 127.0.0.1:9090
+```
+
+In another terminal, run:
+```
+cargo run --bin mn2-bench-client -- --connect 127.0.0.1:9090
+```
+
+
+## Installing to `PATH`
+
+Run:
+```
+cargo install --path .
+```
