@@ -19,6 +19,20 @@ struct Request {
     id: usize,
 }
 
+trait RequestHelpers {
+    fn send(&mut self, input_struct: &Request);
+}
+
+impl RequestHelpers for TcpStream {
+    fn send(&mut self, input_struct: &Request) {
+        let input_string: String = serde_json::to_string(&input_struct).expect("Could not convert struct to string.");
+
+        self.write(input_string.as_bytes()).expect("Could not write input string to stream");
+        self.write(b"\n").expect("Could not write newline to stream");
+        self.flush().expect("Could not flush stream.");
+    }
+}
+
 #[derive(FromArgs)]
 /// Runs a benchmarking server over the melnet2 transport network.
 struct ClientArgs {
@@ -46,11 +60,7 @@ fn spam_reqs(counter: &AtomicUsize, dest: SocketAddr) {
     // one thread spams the same request over and over
     std::thread::spawn(move || {
         loop {
-            let input_string = serde_json::to_string(&request).expect("Could not convert struct to string.");
-
-            upstream.write(input_string.as_bytes()).expect("Could not write input string to stream");
-            upstream.write(b"\n").expect("Could not write newline to stream");
-            upstream.flush().expect("Could not flush stream.");
+            upstream.send(&request);
         }
     });
     
