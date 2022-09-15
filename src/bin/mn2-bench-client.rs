@@ -9,29 +9,30 @@ use std::{
 };
 
 use argh::FromArgs;
-use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
-struct Request {
-    jsonrpc: String,
-    method: String,
-    params: Vec<String>,
-    id: usize,
-}
+// use serde::{Deserialize, Serialize};
 
-trait RequestHelpers {
-    fn send(&mut self, input_struct: &Request);
-}
+// #[derive(Serialize, Deserialize)]
+// struct Request {
+//     jsonrpc: String,
+//     method: String,
+//     params: Vec<String>,
+//     id: usize,
+// }
 
-impl RequestHelpers for TcpStream {
-    fn send(&mut self, input_struct: &Request) {
-        let input_string: String = serde_json::to_string(&input_struct).expect("Could not convert struct to string.");
-
-        self.write(input_string.as_bytes()).expect("Could not write input string to stream");
-        self.write(b"\n").expect("Could not write newline to stream");
-        self.flush().expect("Could not flush stream.");
-    }
-}
+// trait RequestHelpers {
+//     fn send(&mut self, input_struct: &Request);
+// }
+//
+// impl RequestHelpers for TcpStream {
+//     fn send(&mut self, input_struct: &Request) {
+//         let input_string: String = serde_json::to_string(&input_struct).expect("Could not convert struct to string.");
+//
+//         self.write(input_string.as_bytes()).expect("Could not write input string to stream");
+//         self.write(b"\n").expect("Could not write newline to stream");
+//         self.flush().expect("Could not flush stream.");
+//     }
+// }
 
 #[derive(FromArgs)]
 /// Runs a benchmarking server over the melnet2 transport network.
@@ -50,17 +51,24 @@ fn spam_reqs(counter: &AtomicUsize, dest: SocketAddr) {
     
     let mut upstream: TcpStream = connection.try_clone().expect("cannot clone tcp connection");
 
-    let request: Request = Request {
-        jsonrpc: String::from("2.0"),
-        method: String::from("hello-world"),
-        params: vec![String::new()],
-        id: 1,
-    };
+    // let request: Request = Request {
+    //     jsonrpc: String::from("2.0"),
+    //     method: String::from("hello-world"),
+    //     params: vec![String::new()],
+    //     id: 1,
+    // };
 
     // one thread spams the same request over and over
     std::thread::spawn(move || {
+        // loop {
+        //     upstream.send(&request);
+        // }
+
+        let hello_world_request: &[u8;67] =
+            b"{\"jsonrpc\": \"2.0\", \"method\": \"hello-world\", \"params\": [], \"id\": 1}\n";
+        
         loop {
-            upstream.send(&request);
+            upstream.write_all(hello_world_request).expect("cannot write");
         }
     });
     
