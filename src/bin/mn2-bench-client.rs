@@ -10,6 +10,9 @@ use std::{
 
 use argh::FromArgs;
 
+const HELLO_WORLD_REQUEST: &[u8;67] =
+b"{\"jsonrpc\": \"2.0\", \"method\": \"hello-world\", \"params\": [], \"id\": 1}\n";
+
 // use serde::{Deserialize, Serialize};
 
 // #[derive(Serialize, Deserialize)]
@@ -64,11 +67,8 @@ fn spam_reqs(counter: &AtomicUsize, dest: SocketAddr) {
         //     upstream.send(&request);
         // }
 
-        let hello_world_request: &[u8;67] =
-            b"{\"jsonrpc\": \"2.0\", \"method\": \"hello-world\", \"params\": [], \"id\": 1}\n";
-        
         loop {
-            upstream.write_all(hello_world_request).expect("cannot write");
+            upstream.write_all(HELLO_WORLD_REQUEST).expect("cannot write");
         }
     });
     
